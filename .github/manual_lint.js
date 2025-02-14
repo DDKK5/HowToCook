@@ -12,6 +12,10 @@ async function main() {
         var data = await fs.readFile(filePath, 'utf8');
         var filename = path.parse(filePath).base.replace(".md","");
 
+        if (filename.includes(' ')) {
+            errors.push(`文件 ${filePath} 不符合仓库的规范！文件名不能包含空格！`);
+        }
+        
         dataLines = data.split('\n').map(t => t.trim());
         titles = dataLines.filter(t => t.startsWith('#'));
         secondTitles = titles.filter(t => t.startsWith('## '));
@@ -78,7 +82,7 @@ async function main() {
         var mustHave = '如果您遵循本指南的制作流程而发现有问题或可以改进的流程，请提出 Issue 或 Pull request 。';
         var mustHaveIndex = dataLines.indexOf(mustHave);
         if (mustHaveIndex < 0) {
-            errors.push(`文件 ${filePath} 不符合仓库的规范！ 它没有包含必需的附加内容！`);
+            errors.push(`文件 ${filePath} 不符合仓库的规范！ 它没有包含必需的附加内容！，需要在最后一行添加模板中的【如果您遵循本指南的制作流程而发现有……】`);
         }
     }
     
